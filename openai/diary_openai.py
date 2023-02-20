@@ -30,15 +30,14 @@ def on_snapshot_posts(col_snapshot, changes, read_time):
                 userId = item.to_dict()['userId']
                 text = item.to_dict()['text'].replace('`', '')
                 if '/image' in text.lower() and '/chatgpt' not in text.lower() and item.to_dict()['imageUrl'] == "":
-                    initial_prompt = text.lower().replace('/imageai ','')
-                    cleaned_prompt = initial_prompt.replace('/image ', '')
-                    db.collection('all_posts').document(documentId).update({'text': f'Generating image.. (prompt: {cleaned_prompt})'})
-                    db.collection(userId).document(documentId).update({'text': f'Generating image.. (prompt: {cleaned_prompt})'})
+                    prompt = text.lower().replace('/image ','')
+                    db.collection('all_posts').document(documentId).update({'text': f'Generating image.. (prompt: {prompt})'})
+                    db.collection(userId).document(documentId).update({'text': f'Generating image.. (prompt: {prompt})'})
                     try:
-                        response = dalle.create(prompt=initial_prompt, n=1)
+                        response = dalle.create(prompt=prompt, n=1)
                         image_url = response['data'][0]['url']     
-                        db.collection('all_posts').document(documentId).update({'text': cleaned_prompt, 'imageUrl': image_url})
-                        db.collection(userId).document(documentId).update({'text': cleaned_prompt, 'imageUrl': image_url})
+                        db.collection('all_posts').document(documentId).update({'text': prompt, 'imageUrl': image_url})
+                        db.collection(userId).document(documentId).update({'text': prompt, 'imageUrl': image_url})
                     except BaseException as e:
                         print(e)
                         continue
