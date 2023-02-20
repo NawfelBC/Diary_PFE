@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8">
+    {{ turbo() }}
+    <link rel="stylesheet" href="static/css/style.css">
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   </head>
+
+<body>
+  <div class="sidebar">
+    <div class="logo-details">
+      <i class='bx bx-book'></i>
+      <span class="logo_name">Diary</span>
+    </div>
+      <ul class="nav-links">
+        <li>
+          <a href="#" class="active">
+            <i class='bx bx-grid-alt' ></i>
+            <span class="links_name">Dashboard</span>
+          </a>
+        </li>
+        <li>
+          <a href="./api/v1/">
+            <i class='bx bx-box' ></i>
+            <span class="links_name">API</span>
+          </a>
+        </li>
+      </ul>
+  </div>
+  <section class="home-section">
+    <nav>
+      <div class="sidebar-button">
+        <i class='bx bx-menu sidebarBtn'></i>
+        <span class="dashboard">Dashboard</span>
+      </div>
+      <!-- <div class="search-box">
+        <input type="text" placeholder="Search...">
+        <i class='bx bx-search' ></i>
+      </div>
+      <div class="profile-details">
+        <span class="admin_name">Prem Shahi</span>
+        <i class='bx bx-chevron-down' ></i>
+      </div> -->
+    </nav>
+
+    <div class="home-content">
+      <div class="overview-boxes">
+        <div class="box" id="mouse-click" onclick="location.href='./api/v1/users'">
+          <i class='bx bxs-user-rectangle ico' ></i>
+          <div class="right-side">
+            <div class="box-topic">Total Users</div>
+            <div id= "total-users" class="number">{{ total_users }}</div>
+          </div>
+        </div>
+        <div class="box" id="mouse-click" onclick="location.href='./api/v1/posts'">
+          <i class='bx bx-upload ico two' ></i>
+          <div class="right-side">
+            <div class="box-topic">Total Posts</div>
+            <div id= "total-posts" class="number">{{ total_posts }}</div>
+            <!-- <div class="indicator">
+              <i class='bx bx-up-arrow-alt'></i>
+              <span class="text">Up from yesterday</span>
+            </div> -->
+          </div>
+        </div>
+        <div class="box">
+          <i class='bx bx-images ico four' ></i>
+          <div class="right-side">
+            <div class="box-topic">Total Images</div>
+            <div id= "total-images" class="number">{{ total_images }}</div>
+          </div>
+        </div>
+        <div class="box">
+          <i class='bx bx-like ico three' ></i>
+          <div class="right-side">
+            <div class="box-topic">Total Likes</div>
+            <div id= "total-likes" class="number">{{ total_likes }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sales-boxes">
+        <div class="recent-sales box">
+            <div class="title">World map of all posts</div>
+            <iframe id="world-map" src="/map/" name="targetframe" allowTransparency="true" scrolling="no" frameborder="0" width="1050" height="650"></iframe>
+        </div>
+        <div class="container">
+          <div class="top-sales box">
+            <div class="title">Top 3 Users (by interactions)</div>
+              <ul class="top-sales-details" id="leaderboard-id">
+              {% for username in leaderboard %}
+                <li>
+                  <a href="./api/v1/users/profile/{{ username[3] }}/">
+                    <img src={{ username[2] }} alt="">
+                    <span class="product">{{ username[0] }}</span>
+                  </a>
+                  <span class="price">{{ username[1] }}</span>
+                </li>
+              {% endfor %}
+              </ul>
+          </div>
+          <div class="top-sales box">
+            <div class="title">Evolution of posts</div>
+            <canvas class="title" id="lineChart" width="450", height="330"></canvas>
+              <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+              <script>
+                var ctx=document.getElementById("lineChart").getContext("2d");
+                var lineChart = new Chart(ctx, {
+                  type: "line",
+                  data: {
+                    labels: {{ labels | safe }},
+                    datasets: [
+                      {
+                        label: "Number of posts",
+                        data: {{ values | safe }},
+                        fill: false,
+                        borderColor: "rgb(75, 192, 192)",
+                        lineTension: 0.1
+                      }
+                    ]
+                  },
+                  options: {
+                    legend: {
+                        labels: {
+                            fontColor: "white",
+                            fontSize: 10
+                        }
+                    },
+                    responsive: false
+                  }
+                });
+              </script>
+              <!-- <img id="world-map" src="../static/images/evolution_of_posts.png" height="300px" width="300px"></img> -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    let sidebar = document.querySelector(".sidebar");
+    let sidebarBtn = document.querySelector(".sidebarBtn");
+    sidebarBtn.onclick = function() {
+    sidebar.classList.toggle("active");
+    if(sidebar.classList.contains("active")){
+    sidebarBtn.classList.replace("bx-menu" ,"bx-menu-alt-right");
+    }else
+    sidebarBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+    }
+
+ </script>
+
+</body>
+</html>
+
